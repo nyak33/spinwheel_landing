@@ -30,9 +30,10 @@
       </div>
 
       <div class="wheel-wrap">
-        <div class="pointer" aria-hidden="true"></div>
-
         <div class="wheel-area">
+          <!-- Pointer MUST be inside wheel-area so it aligns correctly -->
+          <div class="pointer" aria-hidden="true"></div>
+
           <!-- Wheel + CSS icons are INSIDE this element so they rotate together -->
           <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel">
             <div class="wheel-icons" aria-hidden="true">
