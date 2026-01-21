@@ -33,7 +33,20 @@
         <div class="pointer" aria-hidden="true"></div>
 
         <div class="wheel-area">
-          <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel"></div>
+          <!-- Wheel + CSS icons are INSIDE this element so they rotate together -->
+          <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel">
+            <div class="wheel-icons" aria-hidden="true">
+              <span class="wi wi-1"></span>
+              <span class="wi wi-2"></span>
+              <span class="wi wi-3"></span>
+              <span class="wi wi-4"></span>
+              <span class="wi wi-5"></span>
+              <span class="wi wi-6"></span>
+              <span class="wi wi-7"></span>
+              <span class="wi wi-8"></span>
+            </div>
+          </div>
+
           <div class="wheel-center" aria-hidden="true"></div>
         </div>
 
@@ -49,7 +62,7 @@
       <h3>What you get (if you want this on your product)</h3>
       <ul class="list">
         <li>Custom branding (colors / prizes / logo)</li>
-        <li>Lead capture form + CRM/Sheets integration</li>
+        <li>Lead capture form + Google Sheets integration</li>
         <li>WhatsApp / Email / Call CTA flows</li>
       </ul>
     </section>
