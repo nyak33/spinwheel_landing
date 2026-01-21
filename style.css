@@ -53,30 +53,25 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
 .wheel-wrap{display:grid;grid-template-columns: 1.2fr .8fr;gap:18px;align-items:center;margin-top:10px}
 @media (max-width:840px){.wheel-wrap{grid-template-columns:1fr}}
 
-/* Make wheel-area the anchor for pointer + wheel */
 .wheel-area{
   position:relative;
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:360px; /* a bit taller so pointer fits nicely */
+  min-height:360px;
 }
 
-/* Pointer arrow at top center (points DOWN into the wheel) */
 .pointer{
   position:absolute;
   left:50%;
-  top: calc(50% - 160px - 26px); /* above the wheel */
+  top: calc(50% - 160px - 26px);
   transform: translateX(-50%);
   width:0;height:0;
-
-  /* TRIANGLE THAT POINTS DOWN */
   border-left:16px solid transparent;
   border-right:16px solid transparent;
   border-top:28px solid rgba(255,255,255,.92);
-
   filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));
-  z-index:5;
+  z-index:7;
   pointer-events:none;
 }
 
@@ -104,7 +99,7 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
   position:absolute;width:70px;height:70px;border-radius:50%;
   background:rgba(0,0,0,.25);
   border:1px solid rgba(255,255,255,.14);
-  z-index:6;
+  z-index:8;
 }
 
 .wheel-actions{display:flex;flex-direction:column;gap:10px}
@@ -118,10 +113,10 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
   position:fixed;inset:0;background:rgba(0,0,0,.55);
   display:flex;justify-content:center;align-items:center;padding:20px;z-index:50;
 }
-.hidden{display:none}
+.hidden{display:none !important;}
 
 .modal{
-  width:min(680px,100%);
+  width:min(720px,100%);
   background:rgba(18,26,38,.97);
   border:1px solid var(--line);
   border-radius:18px;
@@ -147,22 +142,27 @@ input{
 input:focus{border-color:rgba(43,104,255,.65)}
 .full{grid-column:1/-1}
 .form-msg{margin-top:10px;color:var(--muted);min-height:22px}
+
+/* ✅ Loader FIX: hidden by default */
 .loader{
+  display:none;
   width:16px;height:16px;border-radius:50%;
   border:2px solid rgba(255,255,255,.35);
   border-top-color:rgba(255,255,255,.95);
-  display:inline-block;margin-left:10px;
+  margin-left:10px;
   animation:spin .8s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* === CSS-only "pictures" (icons) on the wheel === */
+/* show loader only when button is loading */
+#submitBtn.is-loading .loader{ display:inline-block; }
+
+/* === CSS-only icons on the wheel === */
 .wheel-icons{
   position:absolute;
   inset:0;
   pointer-events:none;
 }
-
 .wi{
   position:absolute;
   left:50%;
@@ -171,8 +171,6 @@ input:focus{border-color:rgba(43,104,255,.65)}
   height:28px;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
 }
-
-/* Slice centers for 8 slices => 22.5, 67.5, ... */
 .wi-1{ transform: translate(-50%,-50%) rotate(22.5deg)  translate(0,-128px) rotate(-22.5deg); }
 .wi-2{ transform: translate(-50%,-50%) rotate(67.5deg)  translate(0,-128px) rotate(-67.5deg); }
 .wi-3{ transform: translate(-50%,-50%) rotate(112.5deg) translate(0,-128px) rotate(-112.5deg); }
@@ -182,97 +180,19 @@ input:focus{border-color:rgba(43,104,255,.65)}
 .wi-7{ transform: translate(-50%,-50%) rotate(292.5deg) translate(0,-128px) rotate(-292.5deg) rotate(-45deg); }
 .wi-8{ transform: translate(-50%,-50%) rotate(337.5deg) translate(0,-128px) rotate(-337.5deg); }
 
-/* 1) Circle coin */
-.wi-1{
-  border-radius:999px;
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-
-/* 2) Diamond */
-.wi-2::before{
-  content:"";
-  position:absolute; inset:0;
-  transform: rotate(45deg);
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-
-/* 3) Star (simple 8-point) */
-.wi-3::before,
-.wi-3::after{
-  content:"";
-  position:absolute; inset:0;
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-.wi-3::after{ transform: rotate(45deg); }
-
-/* 4) Gift box */
-.wi-4{
-  border-radius:6px;
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-.wi-4::before{
-  content:"";
-  position:absolute; left:50%; top:0;
-  width:4px; height:100%;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,.75);
-}
-.wi-4::after{
-  content:"";
-  position:absolute; top:50%; left:0;
-  width:100%; height:4px;
-  transform:translateY(-50%);
-  background:rgba(255,255,255,.75);
-}
-
-/* 5) Shield */
-.wi-5{
-  clip-path: polygon(50% 0%, 88% 12%, 88% 55%, 50% 100%, 12% 55%, 12% 12%);
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-
-/* 6) Ticket */
-.wi-6{
-  border-radius:10px;
-  border:2px dashed rgba(255,255,255,.85);
-  background:rgba(255,255,255,.16);
-}
-
-/* 7) Heart lobes */
-.wi-7{
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-.wi-7::before,
-.wi-7::after{
-  content:"";
-  position:absolute;
-  width:14px; height:14px;
-  border-radius:999px;
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  top:-2px;
-}
-.wi-7::before{ left:-2px; }
-.wi-7::after{ right:-2px; }
-
-/* 8) Spark / plus */
-.wi-8::before,
-.wi-8::after{
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  background:rgba(255,255,255,.85);
-  border-radius:3px;
-}
-.wi-8::before{ width:4px; height:26px; }
-.wi-8::after{ width:26px; height:4px; }
+.wi-1{border-radius:999px;border:2px solid rgba(255,255,255,.85);background:rgba(255,255,255,.18);}
+.wi-2::before{content:"";position:absolute;inset:0;transform:rotate(45deg);background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.85);border-radius:6px;}
+.wi-3::before,.wi-3::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.85);border-radius:6px;}
+.wi-3::after{transform:rotate(45deg);}
+.wi-4{border-radius:6px;border:2px solid rgba(255,255,255,.85);background:rgba(255,255,255,.18);}
+.wi-4::before{content:"";position:absolute;left:50%;top:0;width:4px;height:100%;transform:translateX(-50%);background:rgba(255,255,255,.75);}
+.wi-4::after{content:"";position:absolute;top:50%;left:0;width:100%;height:4px;transform:translateY(-50%);background:rgba(255,255,255,.75);}
+.wi-5{clip-path:polygon(50% 0%,88% 12%,88% 55%,50% 100%,12% 55%,12% 12%);border:2px solid rgba(255,255,255,.85);background:rgba(255,255,255,.18);}
+.wi-6{border-radius:10px;border:2px dashed rgba(255,255,255,.85);background:rgba(255,255,255,.16);}
+.wi-7{background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.85);border-radius:6px;}
+.wi-7::before,.wi-7::after{content:"";position:absolute;width:14px;height:14px;border-radius:999px;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.85);top:-2px;}
+.wi-7::before{left:-2px;}
+.wi-7::after{right:-2px;}
+.wi-8::before,.wi-8::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.85);border-radius:3px;}
+.wi-8::before{width:4px;height:26px;}
+.wi-8::after{width:26px;height:4px;}
