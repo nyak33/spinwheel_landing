@@ -1,278 +1,197 @@
-:root{
-  --bg:#0b0f17;
-  --card:#121a26;
-  --text:#e9eef7;
-  --muted:#a9b4c7;
-  --line:rgba(255,255,255,.10);
-  --btn:#2b68ff;
-  --btn2:#263046;
+// === CONFIG ===
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzgPKjo35hWqKmM3cYuH6c6hhrhHjelICcQPBMm5krn21H19gfIprzwvuI7u84oB2wHrQ/exec";
+const WHATSAPP_PHONE = "601164553118";
+const WHATSAPP_MESSAGE = "I want spin wheel feature on my product";
+
+// === SPIN WHEEL (Demo) ===
+const SEGMENTS = [
+  "Free Demo Setup",
+  "Lead Boost",
+  "Custom Branding",
+  "Lucky Offer",
+  "VIP Feature",
+  "Try It On Your Site",
+  "More Sales",
+  "Auto WhatsApp Leads",
+];
+
+let spinning = false;
+let currentRotation = 0;
+
+const wheelDisk = document.getElementById("wheelDisk");
+const spinBtn = document.getElementById("spinBtn");
+const resultText = document.getElementById("resultText");
+
+// Modal elements
+const modalBackdrop = document.getElementById("modalBackdrop");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const leadForm = document.getElementById("leadForm");
+const formMsg = document.getElementById("formMsg");
+const submitBtn = document.getElementById("submitBtn");
+const submitBtnText = document.getElementById("submitBtnText");
+const loader = document.getElementById("loader");
+
+// Hidden inputs
+const sourceInput = document.getElementById("source");
+const locationInput = document.getElementById("location");
+
+document.getElementById("year").textContent = new Date().getFullYear();
+sourceInput.value = window.location.href;
+
+resultText.textContent = "Click Spin to try the demo.";
+
+// === Auto-detect location (hidden) via IP geolocation ===
+// Note: this is approximate and may fail if user uses VPN / blocked requests.
+// If it fails, we just store empty.
+detectLocation().catch(() => { /* ignore */ });
+
+async function detectLocation() {
+  // ipapi.co supports simple JSON without API key for demos
+  const res = await fetch("https://ipapi.co/json/");
+  if (!res.ok) return;
+
+  const data = await res.json();
+  const city = (data.city || "").trim();
+  const region = (data.region || "").trim();
+  const country = (data.country_name || "").trim();
+
+  // Build a clean location string
+  const parts = [city, region, country].filter(Boolean);
+  const loc = parts.join(", ");
+
+  if (loc) locationInput.value = loc;
 }
 
-*{box-sizing:border-box}
-html,body{
-  margin:0;padding:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:radial-gradient(1200px 700px at 20% 0%, #152037 0%, var(--bg) 55%);
-  color:var(--text)
-}
-a{color:inherit}
+// === SPIN ACTION ===
+spinBtn.addEventListener("click", () => {
+  if (spinning) return;
 
-.container{max-width:980px;margin:0 auto;padding:24px}
-.header{padding-top:38px}
-.badge{display:inline-block;border:1px solid var(--line);padding:6px 10px;border-radius:999px;color:var(--muted);font-size:12px}
-h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
-.sub{color:var(--muted);max-width:720px;line-height:1.55}
-.cta-row{display:flex;gap:12px;align-items:center;margin-top:16px;flex-wrap:wrap}
-.hint{color:var(--muted);font-size:13px}
+  spinning = true;
 
-.card{
-  background:rgba(18,26,38,.92);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 12px 40px rgba(0,0,0,.25);
-  margin-top:18px
-}
-.card-head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-end}
-.muted{color:var(--muted)}
-.mini{padding:16px}
+  // Choose random segment
+  const segmentIndex = Math.floor(Math.random() * SEGMENTS.length);
 
-.list{margin:10px 0 0 18px;color:var(--muted);line-height:1.7}
+  // Each segment is 360 / 8 = 45 degrees
+  const segmentAngle = 360 / SEGMENTS.length;
 
-.primary,.secondary,.ghost{
-  border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
-  transition:transform .06s ease, opacity .2s ease, background .2s ease;
-  user-select:none;
-}
-.primary{background:var(--btn);color:white}
-.secondary{background:var(--btn2);color:var(--text);border:1px solid var(--line)}
-.ghost{display:inline-block;text-decoration:none;border:1px solid var(--line);color:var(--text);background:transparent}
-.primary:active,.secondary:active,.ghost:active{transform:scale(0.99)}
-.primary:disabled,.secondary:disabled{opacity:.55;cursor:not-allowed}
+  // Align selected segment center to top pointer (0deg)
+  const targetAngle = (segmentIndex * segmentAngle) + (segmentAngle / 2);
 
-.wheel-wrap{display:grid;grid-template-columns: 1.2fr .8fr;gap:18px;align-items:center;margin-top:10px}
-@media (max-width:840px){.wheel-wrap{grid-template-columns:1fr}}
+  // Add multiple spins
+  const extraSpins = 5 * 360;
+  const newRotation = currentRotation + extraSpins + (360 - targetAngle);
 
-/* Make wheel-area the anchor for pointer + wheel */
-.wheel-area{
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:360px; /* a bit taller so pointer fits nicely */
+  wheelDisk.style.transform = `rotate(${newRotation}deg)`;
+  currentRotation = newRotation;
+
+  resultText.textContent = "Spinning…";
+
+  setTimeout(() => {
+    spinning = false;
+
+    const demoPrize = SEGMENTS[segmentIndex];
+    resultText.innerHTML =
+      `🎉 You got: <b>${escapeHtml(demoPrize)}</b><br>` +
+      `Unlocked: <b>Spin Wheel feature for your product</b>`;
+
+    // Auto open the form after spin
+    openModal();
+  }, 3300);
+});
+
+// === MODAL ===
+closeModalBtn.addEventListener("click", closeModal);
+modalBackdrop.addEventListener("click", (e) => {
+  if (e.target === modalBackdrop) closeModal();
+});
+
+function openModal() {
+  modalBackdrop.classList.remove("hidden");
+  formMsg.textContent = "";
+
+  // focus first input
+  setTimeout(() => document.getElementById("name").focus(), 50);
 }
 
-/* Pointer arrow at top center (points DOWN into the wheel) */
-.pointer{
-  position:absolute;
-  left:50%;
-  top: calc(50% - 160px - 26px); /* above the wheel */
-  transform: translateX(-50%);
-  width:0;height:0;
-
-  /* TRIANGLE THAT POINTS DOWN */
-  border-left:16px solid transparent;
-  border-right:16px solid transparent;
-  border-top:28px solid rgba(255,255,255,.92);
-
-  filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));
-  z-index:5;
-  pointer-events:none;
+function closeModal() {
+  modalBackdrop.classList.add("hidden");
 }
 
-.wheel-disk{
-  width:320px;height:320px;border-radius:50%;
-  border:1px solid var(--line);
-  box-shadow:inset 0 0 0 10px rgba(0,0,0,.20), 0 20px 60px rgba(0,0,0,.28);
-  background:
-    conic-gradient(
-      #2b68ff 0 12.5%,
-      #8b5cf6 12.5% 25%,
-      #22c55e 25% 37.5%,
-      #f97316 37.5% 50%,
-      #06b6d4 50% 62.5%,
-      #ef4444 62.5% 75%,
-      #eab308 75% 87.5%,
-      #14b8a6 87.5% 100%
-    );
-  transition:transform 3.2s cubic-bezier(.15,.85,.2,1);
-  position:relative;
-  overflow:hidden;
+// === FORM SUBMIT ===
+leadForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  // Honeypot
+  const honeypot = (document.getElementById("website").value || "").trim();
+  if (honeypot) {
+    goWhatsApp();
+    return;
+  }
+
+  formMsg.textContent = "";
+  setLoading(true);
+
+  try {
+    // Ensure location attempt happens (if not already)
+    if (!locationInput.value) {
+      try { await detectLocation(); } catch { /* ignore */ }
+    }
+
+    const formData = new FormData(leadForm);
+
+    // Send as x-www-form-urlencoded to avoid CORS preflight problems
+    const body = new URLSearchParams();
+    for (const [k, v] of formData.entries()) body.append(k, String(v));
+
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      },
+      body: body.toString(),
+    });
+
+    const text = await res.text();
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      json = { ok: res.ok };
+    }
+
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || "Submit failed. Please try again.");
+    }
+
+    formMsg.textContent = "Thanks! Opening WhatsApp…";
+    await delay(500);
+    goWhatsApp();
+  } catch (err) {
+    formMsg.textContent = err.message || "Something went wrong. Please try again.";
+    setLoading(false);
+  }
+});
+
+function setLoading(isLoading) {
+  submitBtn.disabled = isLoading;
+  loader.classList.toggle("hidden", !isLoading);
+  submitBtnText.textContent = isLoading ? "Submitting…" : "Submit";
 }
 
-.wheel-center{
-  position:absolute;width:70px;height:70px;border-radius:50%;
-  background:rgba(0,0,0,.25);
-  border:1px solid rgba(255,255,255,.14);
-  z-index:6;
+function goWhatsApp() {
+  const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  window.location.href = url;
 }
 
-.wheel-actions{display:flex;flex-direction:column;gap:10px}
-.result{min-height:42px;padding:10px 12px;border:1px dashed rgba(255,255,255,.18);border-radius:12px;color:var(--muted);line-height:1.4}
-
-.footer{padding-bottom:40px}
-.tiny{font-size:12px;line-height:1.5}
-
-/* Modal */
-.backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);
-  display:flex;justify-content:center;align-items:center;padding:20px;z-index:50;
-}
-.hidden{display:none}
-
-.modal{
-  width:min(680px,100%);
-  background:rgba(18,26,38,.97);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px 16px 14px;
-  box-shadow:0 22px 80px rgba(0,0,0,.45);
-}
-.modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.icon-btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 10px;cursor:pointer}
-
-.form{margin-top:10px}
-#website{position:absolute;left:-9999px;top:-9999px;opacity:0}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-@media (max-width:640px){.grid{grid-template-columns:1fr}}
-label span{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
-label b{color:#ff7a7a}
-input{
-  width:100%;padding:12px 12px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.18);color:var(--text);
-  outline:none;
-}
-input:focus{border-color:rgba(43,104,255,.65)}
-.full{grid-column:1/-1}
-.form-msg{margin-top:10px;color:var(--muted);min-height:22px}
-.loader{
-  width:16px;height:16px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.35);
-  border-top-color:rgba(255,255,255,.95);
-  display:inline-block;margin-left:10px;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* === CSS-only "pictures" (icons) on the wheel === */
-.wheel-icons{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-.wi{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:28px;
-  height:28px;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
-
-/* Slice centers for 8 slices => 22.5, 67.5, ... */
-.wi-1{ transform: translate(-50%,-50%) rotate(22.5deg)  translate(0,-128px) rotate(-22.5deg); }
-.wi-2{ transform: translate(-50%,-50%) rotate(67.5deg)  translate(0,-128px) rotate(-67.5deg); }
-.wi-3{ transform: translate(-50%,-50%) rotate(112.5deg) translate(0,-128px) rotate(-112.5deg); }
-.wi-4{ transform: translate(-50%,-50%) rotate(157.5deg) translate(0,-128px) rotate(-157.5deg); }
-.wi-5{ transform: translate(-50%,-50%) rotate(202.5deg) translate(0,-128px) rotate(-202.5deg); }
-.wi-6{ transform: translate(-50%,-50%) rotate(247.5deg) translate(0,-128px) rotate(-247.5deg); }
-.wi-7{ transform: translate(-50%,-50%) rotate(292.5deg) translate(0,-128px) rotate(-292.5deg) rotate(-45deg); }
-.wi-8{ transform: translate(-50%,-50%) rotate(337.5deg) translate(0,-128px) rotate(-337.5deg); }
-
-/* 1) Circle coin */
-.wi-1{
-  border-radius:999px;
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-
-/* 2) Diamond */
-.wi-2::before{
-  content:"";
-  position:absolute; inset:0;
-  transform: rotate(45deg);
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-
-/* 3) Star (simple 8-point) */
-.wi-3::before,
-.wi-3::after{
-  content:"";
-  position:absolute; inset:0;
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-.wi-3::after{ transform: rotate(45deg); }
-
-/* 4) Gift box */
-.wi-4{
-  border-radius:6px;
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-.wi-4::before{
-  content:"";
-  position:absolute; left:50%; top:0;
-  width:4px; height:100%;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,.75);
-}
-.wi-4::after{
-  content:"";
-  position:absolute; top:50%; left:0;
-  width:100%; height:4px;
-  transform:translateY(-50%);
-  background:rgba(255,255,255,.75);
-}
-
-/* 5) Shield */
-.wi-5{
-  clip-path: polygon(50% 0%, 88% 12%, 88% 55%, 50% 100%, 12% 55%, 12% 12%);
-  border:2px solid rgba(255,255,255,.85);
-  background:rgba(255,255,255,.18);
-}
-
-/* 6) Ticket */
-.wi-6{
-  border-radius:10px;
-  border:2px dashed rgba(255,255,255,.85);
-  background:rgba(255,255,255,.16);
-}
-
-/* 7) Heart lobes */
-.wi-7{
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  border-radius: 6px;
-}
-.wi-7::before,
-.wi-7::after{
-  content:"";
-  position:absolute;
-  width:14px; height:14px;
-  border-radius:999px;
-  background: rgba(255,255,255,.22);
-  border: 2px solid rgba(255,255,255,.85);
-  top:-2px;
-}
-.wi-7::before{ left:-2px; }
-.wi-7::after{ right:-2px; }
-
-/* 8) Spark / plus */
-.wi-8::before,
-.wi-8::after{
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  background:rgba(255,255,255,.85);
-  border-radius:3px;
-}
-.wi-8::before{ width:4px; height:26px; }
-.wi-8::after{ width:26px; height:4px; }
