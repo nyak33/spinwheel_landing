@@ -31,10 +31,8 @@
 
       <div class="wheel-wrap">
         <div class="wheel-area">
-          <!-- Pointer -->
           <div class="pointer" aria-hidden="true"></div>
 
-          <!-- Wheel disk -->
           <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel">
             <div class="wheel-icons" aria-hidden="true">
               <span class="wi wi-1"></span>
@@ -84,7 +82,7 @@
       </p>
 
       <form id="leadForm" class="form">
-        <!-- Honeypot (anti-spam). Must stay hidden. -->
+        <!-- Honeypot -->
         <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" />
 
         <div class="grid">
@@ -115,7 +113,7 @@
 
         <button id="submitBtn" class="primary full" type="submit">
           <span id="submitBtnText">Submit</span>
-          <span id="loader" class="loader hidden" aria-hidden="true"></span>
+          <span id="loader" class="loader" aria-hidden="true"></span>
         </button>
 
         <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
