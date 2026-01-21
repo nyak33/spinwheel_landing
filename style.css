@@ -53,12 +53,29 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
 .wheel-wrap{display:grid;grid-template-columns: 1.2fr .8fr;gap:18px;align-items:center;margin-top:10px}
 @media (max-width:840px){.wheel-wrap{grid-template-columns:1fr}}
 
-.wheel-area{position:relative;display:flex;justify-content:center;align-items:center;min-height:320px}
+/* Make wheel-area the anchor for pointer + wheel */
+.wheel-area{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:360px; /* a bit taller so pointer fits nicely */
+}
+
+/* Pointer arrow at top center (shows winning slice) */
 .pointer{
-  position:absolute;left:50%;top:-2px;transform:translateX(-50%);
-  width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:28px solid rgba(255,255,255,.88);
-  filter:drop-shadow(0 8px 10px rgba(0,0,0,.35));
-  z-index:3;
+  position:absolute;
+  left:50%;
+  /* wheel size is 320px => radius 160px. place pointer above wheel */
+  top: calc(50% - 160px - 26px);
+  transform: translateX(-50%);
+  width:0;height:0;
+  border-left:16px solid transparent;
+  border-right:16px solid transparent;
+  border-bottom:28px solid rgba(255,255,255,.92);
+  filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));
+  z-index:5;
+  pointer-events:none;
 }
 
 .wheel-disk{
@@ -77,15 +94,15 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
       #14b8a6 87.5% 100%
     );
   transition:transform 3.2s cubic-bezier(.15,.85,.2,1);
-  position:relative;      /* important for icons */
-  overflow:hidden;        /* keep icons inside */
+  position:relative;
+  overflow:hidden;
 }
 
 .wheel-center{
   position:absolute;width:70px;height:70px;border-radius:50%;
   background:rgba(0,0,0,.25);
   border:1px solid rgba(255,255,255,.14);
-  z-index:2;
+  z-index:6;
 }
 
 .wheel-actions{display:flex;flex-direction:column;gap:10px}
@@ -144,7 +161,6 @@ input:focus{border-color:rgba(43,104,255,.65)}
   pointer-events:none;
 }
 
-/* Base icon */
 .wi{
   position:absolute;
   left:50%;
@@ -161,7 +177,7 @@ input:focus{border-color:rgba(43,104,255,.65)}
 .wi-4{ transform: translate(-50%,-50%) rotate(157.5deg) translate(0,-128px) rotate(-157.5deg); }
 .wi-5{ transform: translate(-50%,-50%) rotate(202.5deg) translate(0,-128px) rotate(-202.5deg); }
 .wi-6{ transform: translate(-50%,-50%) rotate(247.5deg) translate(0,-128px) rotate(-247.5deg); }
-.wi-7{ transform: translate(-50%,-50%) rotate(292.5deg) translate(0,-128px) rotate(-292.5deg); }
+.wi-7{ transform: translate(-50%,-50%) rotate(292.5deg) translate(0,-128px) rotate(-292.5deg) rotate(-45deg); }
 .wi-8{ transform: translate(-50%,-50%) rotate(337.5deg) translate(0,-128px) rotate(-337.5deg); }
 
 /* 1) Circle coin */
@@ -227,11 +243,10 @@ input:focus{border-color:rgba(43,104,255,.65)}
   background:rgba(255,255,255,.16);
 }
 
-/* 7) Heart (simple) */
+/* 7) Heart lobes */
 .wi-7{
   background: rgba(255,255,255,.22);
   border: 2px solid rgba(255,255,255,.85);
-  transform: translate(-50%,-50%) rotate(292.5deg) translate(0,-128px) rotate(-292.5deg) rotate(-45deg);
   border-radius: 6px;
 }
 .wi-7::before,
