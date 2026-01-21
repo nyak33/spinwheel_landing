@@ -62,17 +62,19 @@ h1{margin:10px 0 8px;font-size:40px;letter-spacing:-0.02em}
   min-height:360px; /* a bit taller so pointer fits nicely */
 }
 
-/* Pointer arrow at top center (shows winning slice) */
+/* Pointer arrow at top center (points DOWN into the wheel) */
 .pointer{
   position:absolute;
   left:50%;
-  /* wheel size is 320px => radius 160px. place pointer above wheel */
-  top: calc(50% - 160px - 26px);
+  top: calc(50% - 160px - 26px); /* above the wheel */
   transform: translateX(-50%);
   width:0;height:0;
+
+  /* TRIANGLE THAT POINTS DOWN */
   border-left:16px solid transparent;
   border-right:16px solid transparent;
-  border-bottom:28px solid rgba(255,255,255,.92);
+  border-top:28px solid rgba(255,255,255,.92);
+
   filter:drop-shadow(0 10px 14px rgba(0,0,0,.45));
   z-index:5;
   pointer-events:none;
