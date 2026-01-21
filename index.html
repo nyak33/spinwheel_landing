@@ -13,7 +13,7 @@
       <div class="badge">Interactive Demo</div>
       <h1>Spin &amp; Win (Demo)</h1>
       <p class="sub">
-        Try a branded spin wheel experience. The “prize” is a demo offer — contact me to add this feature to your product.
+        Spin the wheel demo. After you “win”, the form will pop up so you can request this feature for your product.
       </p>
       <div class="cta-row">
         <a class="ghost" href="#wheel">Try the demo</a>
@@ -31,10 +31,10 @@
 
       <div class="wheel-wrap">
         <div class="wheel-area">
-          <!-- Pointer MUST be inside wheel-area so it aligns correctly -->
+          <!-- Pointer -->
           <div class="pointer" aria-hidden="true"></div>
 
-          <!-- Wheel + CSS icons are INSIDE this element so they rotate together -->
+          <!-- Wheel disk -->
           <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel">
             <div class="wheel-icons" aria-hidden="true">
               <span class="wi wi-1"></span>
@@ -53,8 +53,10 @@
 
         <div class="wheel-actions">
           <button id="spinBtn" class="primary" type="button">Spin</button>
-          <button id="contactBtn" class="secondary" type="button" disabled>Contact Me</button>
           <div id="resultText" class="result" role="status" aria-live="polite"></div>
+          <div class="muted tiny">
+            After the spin result, the form will open automatically.
+          </div>
         </div>
       </div>
     </section>
@@ -87,31 +89,28 @@
 
         <div class="grid">
           <label>
-            <span>Company name <b>*</b></span>
-            <input name="company_name" id="company_name" type="text" required />
+            <span>Name <b>*</b></span>
+            <input name="name" id="name" type="text" required placeholder="Your name" />
           </label>
 
           <label>
-            <span>Location</span>
-            <input name="location" id="location" type="text" />
-          </label>
-
-          <label>
-            <span>Email <b>*</b></span>
-            <input name="email" id="email" type="email" required />
-          </label>
-
-          <label>
-            <span>Contact person <b>*</b></span>
-            <input name="contact_person" id="contact_person" type="text" required />
+            <span>Phone number <b>*</b></span>
+            <input name="phone" id="phone" type="tel" inputmode="tel" required placeholder="e.g. 60123456789" />
           </label>
 
           <label class="full">
-            <span>Phone number</span>
-            <input name="phone" id="phone" type="tel" inputmode="tel" />
+            <span>Company name (optional)</span>
+            <input name="company_name" id="company_name" type="text" placeholder="Company name" />
+          </label>
+
+          <label class="full">
+            <span>Email (optional)</span>
+            <input name="email" id="email" type="email" placeholder="name@email.com" />
           </label>
         </div>
 
+        <!-- Hidden fields -->
+        <input type="hidden" name="location" id="location" />
         <input type="hidden" name="source" id="source" />
 
         <button id="submitBtn" class="primary full" type="submit">
