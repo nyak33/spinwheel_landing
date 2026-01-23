@@ -1,6 +1,6 @@
 {
   "brand": {
-    "background": "green-gradient",
+    "background": "creamy-white",
     "title": "Syaqir Shaq — Demo"
   },
   "apps_script": {
@@ -95,14 +95,17 @@
     {
       "label": "Email",
       "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/email%20logo.png",
-      "url": "mailto:syaqirshaq@packtica.com"
+      "url": "https://mail.google.com/mail/?view=cm&fs=1&to=syaqirshaq@packtica.com&su=Hi%20Syaqir&body=Hi%20Syaqir%2C%20I%20got%20your%20card%20and%20want%20to%20connect."
     },
     {
-  "label": "WhatsApp",
-  "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/whatsAPP%20Logo.png",
-  "url": "https://wa.me/601164553118?text=Hi%20Syaqir%2C%20I%20got%20your%20card%20and%20want%20to%20connect."
+      "label": "WhatsApp",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/whatsAPP%20Logo.png",
+      "url": "https://wa.me/601164553118?text=Hi%20Syaqir%2C%20I%20got%20your%20card%20and%20want%20to%20connect."
+    },
+    {
+      "label": "Website",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Packtica%20Logo%20-%20Logo%20only.png",
+      "url": "https://packtica.com"
     }
-
   ]
 }
-
