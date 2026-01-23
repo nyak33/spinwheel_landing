@@ -2,34 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Spin Wheel Demo — Contact Me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Syaqir Shaq — Demo</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <header class="container header">
-    <div>
-      <div class="badge">Interactive Demo</div>
-      <h1>Spin &amp; Win (Demo)</h1>
-      <p class="sub">
-        Spin the wheel demo. After you “win”, the form will pop up so you can request this feature for your product.
-      </p>
-      <div class="cta-row">
-        <a class="ghost" href="#wheel">Try the demo</a>
-        <span class="hint">Scan → spin → submit → WhatsApp</span>
-      </div>
+  <main class="page">
+    <div class="stack" id="app">
+      <!-- Rendered by script.js from config.json -->
     </div>
-  </header>
+  </main>
 
-  <main class="container">
-    <section id="wheel" class="card">
-      <div class="card-head">
-        <h2>Spin Wheel</h2>
-        <p class="muted">Demo only. Any result unlocks the same offer.</p>
+  <!-- Spin Modal (Full-screen on mobile) -->
+  <div id="spinModalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="spinModalTitle">
+    <div class="modal modal-full">
+      <div class="modal-topbar">
+        <button id="closeSpinModalBtn" class="icon-btn" type="button" aria-label="Close">←</button>
+        <div class="modal-title">
+          <div class="pill">INSTANT WIN</div>
+          <div id="spinModalTitle" class="modal-heading">Spin &amp; Win</div>
+        </div>
+        <div style="width:44px;"></div>
       </div>
 
-      <div class="wheel-wrap">
+      <div class="modal-body">
         <div class="wheel-area">
           <div class="pointer" aria-hidden="true"></div>
 
@@ -49,85 +46,63 @@
           <div class="wheel-center" aria-hidden="true"></div>
         </div>
 
-        <div class="wheel-actions">
-          <button id="spinBtn" class="primary" type="button">Spin</button>
+        <div class="wheel-panel">
           <div id="resultText" class="result" role="status" aria-live="polite"></div>
-          <div class="muted tiny">
-            After the spin result, the form will open automatically.
-          </div>
+          <button id="spinBtn" class="btn btn-primary btn-big" type="button">Spin Now</button>
         </div>
       </div>
-    </section>
 
-    <section class="card mini">
-      <h3>What you get (if you want this on your product)</h3>
-      <ul class="list">
-        <li>Custom branding (colors / prizes / logo)</li>
-        <li>Lead capture form + Google Sheets integration</li>
-        <li>WhatsApp / Email / Call CTA flows</li>
-      </ul>
-    </section>
-  </main>
+      <!-- Bottom Sheet Form -->
+      <div id="sheet" class="sheet" aria-hidden="true">
+        <div class="sheet-handle" aria-hidden="true"></div>
 
-  <!-- Modal -->
-  <div id="modalBackdrop" class="backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal">
-      <div class="modal-head">
-        <h2 id="modalTitle">Get This Feature</h2>
-        <button id="closeModalBtn" class="icon-btn" type="button" aria-label="Close">✕</button>
-      </div>
+        <div class="sheet-header">
+          <div class="sheet-title">Get This Feature</div>
+          <div class="sheet-sub">Fill in your details. After submit, WhatsApp will open automatically.</div>
+        </div>
 
-      <p class="muted">
-        Fill in your details. After submit, WhatsApp will open automatically.
-      </p>
+        <form id="leadForm" class="form">
+          <!-- Honeypot -->
+          <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" />
 
-      <form id="leadForm" class="form">
-        <!-- Honeypot -->
-        <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" />
-
-        <div class="grid">
-          <label>
+          <label class="field">
             <span>Name <b>*</b></span>
             <input name="name" id="name" type="text" required placeholder="Your name" />
           </label>
 
-          <label>
+          <label class="field">
             <span>Phone number <b>*</b></span>
             <input name="phone" id="phone" type="tel" inputmode="tel" required placeholder="e.g. 60123456789" />
           </label>
 
-          <label class="full">
+          <label class="field">
             <span>Company name (optional)</span>
             <input name="company_name" id="company_name" type="text" placeholder="Company name" />
           </label>
 
-          <label class="full">
+          <label class="field">
             <span>Email (optional)</span>
             <input name="email" id="email" type="email" placeholder="name@email.com" />
           </label>
-        </div>
 
-        <!-- Hidden fields -->
-        <input type="hidden" name="location" id="location" />
-        <input type="hidden" name="source" id="source" />
+          <!-- Hidden fields -->
+          <input type="hidden" name="location" id="location" />
+          <input type="hidden" name="source" id="source" />
 
-        <button id="submitBtn" class="primary full" type="submit">
-          <span id="submitBtnText">Submit</span>
-          <span id="loader" class="loader" aria-hidden="true"></span>
-        </button>
+          <button id="submitBtn" class="btn btn-primary btn-big" type="submit">
+            <span id="submitBtnText">Submit</span>
+            <span class="loader" aria-hidden="true"></span>
+          </button>
 
-        <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
+          <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
 
-        <p class="tiny muted">
-          By submitting, you agree to be contacted about this feature. Your info is only used to respond to your request.
-        </p>
-      </form>
+          <div class="fineprint">
+            By submitting, you agree to be contacted about this feature.
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-
-  <footer class="container footer">
-    <span class="muted">© <span id="year"></span> Syaqir Shaq — Spin Wheel Demo</span>
-  </footer>
 
   <script src="script.js"></script>
 </body>

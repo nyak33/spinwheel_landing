@@ -1,0 +1,107 @@
+{
+  "brand": {
+    "background": "green-gradient",
+    "title": "Syaqir Shaq — Demo"
+  },
+  "apps_script": {
+    "endpoint": "https://script.google.com/macros/s/AKfycbzgPKjo35hWqKmM3cYuH6c6hhrhHjelICcQPBMm5krn21H19gfIprzwvuI7u84oB2wHrQ/exec"
+  },
+  "whatsapp": {
+    "number": "601164553118",
+    "connect_message": "Hi Syaqir, I got your card and want to connect.",
+    "feature_message": "I want spin wheel feature on my product"
+  },
+  "business_card": {
+    "photo_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Gambar_Syaqir.jpeg",
+    "name": "SYAQIR SHAQ",
+    "tagline": "EVOLVE YOUR KNOWLEDGE",
+    "position": "STRATEGIC ACCOUNT MANAGER",
+    "company": "PACKTICA SDN BHD"
+  },
+  "spin_demo": {
+    "badge": "INSTANT WIN",
+    "title": "Spin & Win Demo",
+    "banner_image_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/spin_to_win.png",
+    "button_text": "Play Now"
+  },
+  "save_contact": {
+    "card_title": "Save My Contact",
+    "full_name": "Syaqir Shaq",
+    "phone": "601164553118",
+    "email": "syaqirshaq@packtica.com",
+    "company": "Packtica SDN BHD",
+    "job_title": "Strategic Account Manager",
+    "website": "https://packtica.com",
+    "vcf_path": "/syaqir-shaq.vcf",
+    "socials": [
+      {
+        "label": "Instagram",
+        "url": "https://www.instagram.com/syaqir_sharani/?hl=en",
+        "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Insta%20LOGO.png"
+      },
+      {
+        "label": "TikTok",
+        "url": "https://www.tiktok.com/@syaqirshaq?lang=en",
+        "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Tiktok_logo.png"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/syaqirshaq/",
+        "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/LinkedIn%20Logo.png"
+      }
+    ]
+  },
+  "social_cards": [
+    {
+      "type": "link",
+      "platform": "Instagram",
+      "thumbnail_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Instgram_Thumbnail.png",
+      "title": "Instagram Post",
+      "button_text": "Open Post",
+      "url": "https://www.instagram.com/p/CWmxkEgJXo3/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+    },
+    {
+      "type": "link",
+      "platform": "TikTok",
+      "thumbnail_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Instgram_Thumbnail.png",
+      "title": "TikTok Post",
+      "button_text": "Open Post",
+      "url": "https://www.tiktok.com/@packtica.my/video/7568345269465664776"
+    },
+    {
+      "type": "youtube",
+      "platform": "YouTube",
+      "title": "YouTube Video",
+      "url": "https://www.youtube.com/watch?v=zb0QE2a_TOc",
+      "button_text": "Open YouTube"
+    }
+  ],
+  "footer_icons": [
+    {
+      "label": "Instagram",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Insta%20LOGO.png",
+      "url": "https://www.instagram.com/packtica.my/"
+    },
+    {
+      "label": "TikTok",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/Tiktok_logo.png",
+      "url": "https://www.tiktok.com/@syaqirshaq?lang=en"
+    },
+    {
+      "label": "LinkedIn",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/LinkedIn%20Logo.png",
+      "url": "https://www.linkedin.com/in/syaqirshaq/"
+    },
+    {
+      "label": "Email",
+      "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/email%20logo.png",
+      "url": "mailto:syaqirshaq@packtica.com"
+    },
+    {
+  "label": "WhatsApp",
+  "icon_url": "https://raw.githubusercontent.com/nyak33/email_asset/main/whatsAPP%20Logo.png",
+  "url": "https://wa.me/601164553118?text=Hi%20Syaqir%2C%20I%20got%20your%20card%20and%20want%20to%20connect."
+    }
+
+  ]
+}
