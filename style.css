@@ -1,24 +1,25 @@
 :root{
-  --bg1:#12a150;
-  --bg2:#0b6a32;
-  --card:#0f1721;
-  --card2:#111c29;
-  --text:#eaf3ff;
-  --muted:rgba(234,243,255,.75);
-  --line:rgba(255,255,255,.12);
-  --shadow: 0 18px 50px rgba(0,0,0,.35);
-  --btn:#1f6bff;
-  --btn2:rgba(255,255,255,.10);
-  --pill:rgba(255,255,255,.14);
-  --danger:#ff7a7a;
+  --bg: #f6f1e7;                 /* creamy white */
+  --text-dark: #0f1721;
+  --card: rgba(15,23,33,.92);
+  --text: #eaf3ff;
+  --muted: rgba(234,243,255,.75);
+  --line: rgba(255,255,255,.12);
+  --shadow: 0 18px 50px rgba(0,0,0,.20);
+
+  --btn: #1f6bff;
+  --btn2: rgba(255,255,255,.10);
+  --pill: rgba(255,255,255,.14);
+  --danger: #ff7a7a;
 }
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; margin:0; }
+
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: #ffffff;
-  background: #f6f1e7; /* creamy white */
+  background: var(--bg);
+  color: var(--text-dark);
 }
 
 a{ color:inherit; text-decoration:none; }
@@ -34,11 +35,12 @@ a{ color:inherit; text-decoration:none; }
 
 /* Cards */
 .card{
-  background: rgba(15,23,33,.92);
+  background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   box-shadow: var(--shadow);
   overflow:hidden;
+  color: var(--text);
 }
 .card-inner{ padding:14px; }
 
@@ -112,18 +114,25 @@ a{ color:inherit; text-decoration:none; }
 .info .label{ color:var(--muted); font-size:12px; }
 .info .value{ font-weight:900; margin-top:4px; font-size:13px; }
 
+/* NEW: CTA strip inside business card */
+.biz-cta{
+  margin-top:12px;
+  padding:12px 12px;
+  border-radius:14px;
+  background: rgba(31,107,255,.16);
+  border: 1px solid rgba(31,107,255,.35);
+  color: rgba(234,243,255,.92);
+  font-weight: 900;
+  text-align:center;
+  letter-spacing: .01em;
+}
+
 /* Hero / Spin card with banner */
 .banner{
   width:100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display:block;
-}
-.hero-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
 }
 .hero-actions{ margin-top:12px; }
 
@@ -187,41 +196,54 @@ a{ color:inherit; text-decoration:none; }
   border:0;
 }
 
-/* Footer icons inside a light box */
+/* Footer icons inside a light box (Option B) + bigger icons */
 .footer{
   display:flex;
   justify-content:center;
   gap:16px;
   padding:16px 14px;
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(255,255,255,.78);
   border: 1px solid rgba(0,0,0,.08);
   border-radius: 18px;
-  box-shadow: 0 14px 40px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 40px rgba(0,0,0,.10);
 }
-
-/* Icon button size (bigger) */
 .footer a{
-  width:54px;                 /* was 44px */
-  height:54px;                /* was 44px */
+  width:54px;
+  height:54px;
   border-radius: 16px;
   display:flex;
   align-items:center;
   justify-content:center;
-  background: rgba(255, 254, 254, 0.04);
-  border:1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0,0,0,.04);
+  border:1px solid rgba(0,0,0,.08);
 }
-
-/* Icon image size (bigger) */
 .footer img{
-  width:35px;                 /* was 22px */
-  height:35px;                /* was 22px */
+  width:30px;
+  height:30px;
   object-fit:contain;
 }
 
-
-/* Modal */
+/* Toast */
 .hidden{ display:none !important; }
 
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 24px));
+  background: rgba(15,23,33,.96);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.35);
+  z-index: 80;
+  font-size: 13px;
+}
+.toast a{ text-decoration: underline; color: #cfe1ff; }
+
+/* Modal */
 .modal-backdrop{
   position:fixed;
   inset:0;
@@ -241,6 +263,7 @@ a{ color:inherit; text-decoration:none; }
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: 0 -16px 60px rgba(0,0,0,.45);
   overflow:hidden;
+  color: var(--text);
 }
 
 .modal-full{
@@ -397,6 +420,7 @@ a{ color:inherit; text-decoration:none; }
   transition: transform .28s ease;
   padding: 10px 14px 18px;
   z-index:20;
+  color: var(--text);
 }
 .sheet.open{ transform: translateY(0%); }
 
@@ -430,6 +454,10 @@ a{ color:inherit; text-decoration:none; }
 .form-msg{ min-height:18px; color: var(--muted); font-size:13px; text-align:center; margin-top:2px; }
 .fineprint{ color: var(--muted); font-size:12px; text-align:center; line-height:1.35; }
 
+/* After-submit WhatsApp CTA */
+.wa-cta{ margin-top: 8px; }
+.wa-cta.hidden{ display:none !important; }
+
 .loader{
   display:none;
   width:16px;height:16px;border-radius:50%;
@@ -439,15 +467,3 @@ a{ color:inherit; text-decoration:none; }
 }
 #submitBtn.is-loading .loader{ display:inline-block; }
 @keyframes spin{ to{ transform: rotate(360deg); } }
-
-.biz-cta{
-  margin-top:12px;
-  padding:12px 12px;
-  border-radius:14px;
-  background: rgba(31,107,255,.16);
-  border: 1px solid rgba(31,107,255,.35);
-  color: rgba(234,243,255,.92);
-  font-weight: 900;
-  text-align:center;
-  letter-spacing: .01em;
-}
