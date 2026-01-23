@@ -32,7 +32,7 @@
     "company": "Packtica SDN BHD",
     "job_title": "Strategic Account Manager",
     "website": "https://packtica.com",
-    "vcf_path": "/syaqir-shaq.vcf",
+    "vcf_path": "syaqir-shaq.vcf",
     "socials": [
       {
         "label": "Instagram",
@@ -105,3 +105,4 @@
 
   ]
 }
+
