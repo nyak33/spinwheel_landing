@@ -14,6 +14,9 @@
     </div>
   </main>
 
+  <!-- Small toast for blocked popups / manual links -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
   <!-- Spin Modal (Full-screen on mobile) -->
   <div id="spinModalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="spinModalTitle">
     <div class="modal modal-full">
@@ -58,7 +61,7 @@
 
         <div class="sheet-header">
           <div class="sheet-title">Get This Feature</div>
-          <div class="sheet-sub">Fill in your details. After submit, WhatsApp will open automatically.</div>
+          <div class="sheet-sub">Fill in your details. After submit, tap the button to open WhatsApp.</div>
         </div>
 
         <form id="leadForm" class="form">
@@ -95,6 +98,13 @@
           </button>
 
           <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
+
+          <!-- NEW: WhatsApp CTA shown after successful submit -->
+          <div id="waCtaWrap" class="wa-cta hidden">
+            <a id="waCtaBtn" class="btn btn-primary btn-big" href="#" target="_blank" rel="noopener">
+              Tap to open WhatsApp
+            </a>
+          </div>
 
           <div class="fineprint">
             By submitting, you agree to be contacted about this feature.
