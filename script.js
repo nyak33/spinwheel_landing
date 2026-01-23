@@ -68,7 +68,7 @@ async function init() {
 }
 
 async function loadConfig() {
-  const res = await fetch("/config.json", { cache: "no-store" });
+  const res = await fetch("config.json", { cache: "no-store" });
   if (!res.ok) throw new Error("config.json not found");
   return res.json();
 }
@@ -443,3 +443,4 @@ function escapeHtml(str) {
 function escapeAttr(str) {
   return escapeHtml(str).replaceAll("`", "&#096;");
 }
+
