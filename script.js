@@ -1,13 +1,11 @@
 /* =========================================================
    Spin & Win Landing (config.json-driven)
-   - Business card click => WhatsApp connect message (NEW TAB only)
+   - Business card click => WhatsApp connect message (NEW TAB)
    - Play Now => full-screen Spin modal
-   - After spin => slide-up bottom sheet form
-   - Submit => Google Sheets + Email (Apps Script)
-             => "Thanks! Opening WhatsApp…" (0.5s) => WhatsApp (NEW TAB)
-   Notes:
-   - To avoid "both tabs redirect", we DO NOT force same-tab fallback.
-   - For submit, we pre-open a blank tab on user gesture, then set its URL later.
+   - After spin => bottom sheet form
+   - Submit => Google Sheets (Apps Script) + Email (Apps Script)
+             => show "Tap to open WhatsApp" button (NEW TAB, no popup blocked)
+   - GitHub Pages compatible: uses fetch("config.json")
    ========================================================= */
 
 const SEGMENTS = [
@@ -25,6 +23,7 @@ let cfg = null;
 
 // DOM
 const app = document.getElementById("app");
+const toast = document.getElementById("toast");
 
 // Modal DOM
 const spinModalBackdrop = document.getElementById("spinModalBackdrop");
@@ -41,6 +40,10 @@ const submitBtn = document.getElementById("submitBtn");
 const submitBtnText = document.getElementById("submitBtnText");
 const locationInput = document.getElementById("location");
 const sourceInput = document.getElementById("source");
+
+// After-submit WhatsApp CTA
+const waCtaWrap = document.getElementById("waCtaWrap");
+const waCtaBtn = document.getElementById("waCtaBtn");
 
 let spinning = false;
 let currentRotation = 0;
@@ -60,14 +63,17 @@ async function init() {
   renderLanding(cfg);
   bindEvents(cfg);
 
+  // Hidden fields
   sourceInput.value = window.location.href;
 
   // Best-effort location capture (hidden)
   detectLocation().catch(() => {});
+
   resultText.textContent = "Tap Spin Now to try the demo.";
 }
 
 async function loadConfig() {
+  // IMPORTANT: relative path for GitHub Pages
   const res = await fetch("config.json", { cache: "no-store" });
   if (!res.ok) throw new Error("config.json not found");
   return res.json();
@@ -80,6 +86,7 @@ function renderLanding(config) {
   const socialCards = config.social_cards || [];
   const footerIcons = config.footer_icons || [];
 
+  // Business card (click => WhatsApp)
   const businessCard = `
     <section class="card business" id="businessCard" role="button" tabindex="0" aria-label="Open WhatsApp">
       <div class="card-inner">
@@ -102,25 +109,20 @@ function renderLanding(config) {
           </div>
         </div>
 
-        <!-- NEW CTA at bottom -->
-        <div class="biz-cta">
-          Click here to WhatsApp me →
-        </div>
+        <div class="biz-cta">Click here to WhatsApp me →</div>
       </div>
     </section>
   `;
 
-
+  // Spin demo card
   const spinCard = `
     <section class="card">
       <img class="banner" src="${escapeAttr(s.banner_image_url)}" alt="Spin & Win" />
       <div class="card-inner">
-        <div class="hero-head">
-          <div>
-            <div class="pill">${escapeHtml(s.badge || "INSTANT WIN")}</div>
-            <div class="card-title" style="margin-top:10px;">${escapeHtml(s.title || "Spin & Win Demo")}</div>
-            <div class="card-sub">Play the demo. After you spin, fill the form and WhatsApp will open automatically.</div>
-          </div>
+        <div>
+          <div class="pill">${escapeHtml(s.badge || "INSTANT WIN")}</div>
+          <div class="card-title" style="margin-top:10px;">${escapeHtml(s.title || "Spin & Win Demo")}</div>
+          <div class="card-sub">Play the demo. After you spin, fill the form and then tap to open WhatsApp.</div>
         </div>
         <div class="hero-actions">
           <button id="playNowBtn" class="btn btn-primary btn-big" type="button">${escapeHtml(s.button_text || "Play Now")}</button>
@@ -129,6 +131,7 @@ function renderLanding(config) {
     </section>
   `;
 
+  // Save contact card
   const socialsMini = (c.socials || []).map(x => `
     <a href="${escapeAttr(x.url)}" target="_blank" rel="noopener">
       <img src="${escapeAttr(x.icon_url)}" alt="${escapeAttr(x.label)}" />
@@ -151,17 +154,16 @@ function renderLanding(config) {
           <div class="kv"><div class="k">Website</div><div class="v">${escapeHtml(c.website)}</div></div>
         </div>
 
-        <div class="social-mini">
-          ${socialsMini}
-        </div>
+        <div class="social-mini">${socialsMini}</div>
 
         <div style="margin-top:12px;">
-          <a class="btn btn-secondary btn-big" href="${escapeAttr(c.vcf_path || "/syaqir-shaq.vcf")}" download>Save Contact</a>
+          <a class="btn btn-secondary btn-big" href="${escapeAttr(c.vcf_path || "syaqir-shaq.vcf")}" download>Save Contact</a>
         </div>
       </div>
     </section>
   `;
 
+  // Social cards
   const socialHtml = socialCards.map((item) => {
     if (item.type === "youtube") {
       const ytId = getYouTubeId(item.url);
@@ -176,12 +178,8 @@ function renderLanding(config) {
             }
           </div>
           <div class="card-inner">
-            <div class="platform">
-              <div>
-                <div class="pill">YouTube</div>
-                <div class="card-title" style="margin-top:10px;">${escapeHtml(item.title || "YouTube Video")}</div>
-              </div>
-            </div>
+            <div class="pill">YouTube</div>
+            <div class="card-title" style="margin-top:10px;">${escapeHtml(item.title || "YouTube Video")}</div>
             <div style="margin-top:12px;">
               <a class="btn btn-secondary btn-big" href="${escapeAttr(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.button_text || "Open YouTube")}</a>
             </div>
@@ -190,17 +188,14 @@ function renderLanding(config) {
       `;
     }
 
+    // IG / TikTok thumbnail link cards
     return `
       <section class="card">
         <img class="post-thumb" src="${escapeAttr(item.thumbnail_url)}" alt="${escapeAttr(item.platform)} thumbnail" />
         <div class="card-inner">
-          <div class="platform">
-            <div>
-              <div class="pill">${escapeHtml(item.platform || "Post")}</div>
-              <div class="card-title" style="margin-top:10px;">${escapeHtml(item.title || (item.platform + " Post"))}</div>
-              <div class="card-sub">Tap to open the post.</div>
-            </div>
-          </div>
+          <div class="pill">${escapeHtml(item.platform || "Post")}</div>
+          <div class="card-title" style="margin-top:10px;">${escapeHtml(item.title || (item.platform + " Post"))}</div>
+          <div class="card-sub">Tap to open the post.</div>
           <div style="margin-top:12px;">
             <a class="btn btn-secondary btn-big" href="${escapeAttr(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.button_text || "Open Post")}</a>
           </div>
@@ -209,6 +204,7 @@ function renderLanding(config) {
     `;
   }).join("");
 
+  // Footer icons (rendered from config)
   const footerHtml = `
     <div class="footer" aria-label="Social links">
       ${footerIcons.map((x) => `
@@ -226,13 +222,15 @@ function bindEvents(config) {
   const businessCard = document.getElementById("businessCard");
   const playNowBtn = document.getElementById("playNowBtn");
 
-  businessCard.addEventListener("click", () =>
-    openWhatsAppNewTab(config.whatsapp.number, config.whatsapp.connect_message)
-  );
+  businessCard.addEventListener("click", () => {
+    const url = makeWaUrl(config.whatsapp.number, config.whatsapp.connect_message);
+    openNewTabOrToast(url, "Popup blocked. Tap here to WhatsApp me:");
+  });
 
   businessCard.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
-      openWhatsAppNewTab(config.whatsapp.number, config.whatsapp.connect_message);
+      const url = makeWaUrl(config.whatsapp.number, config.whatsapp.connect_message);
+      openNewTabOrToast(url, "Popup blocked. Tap here to WhatsApp me:");
     }
   });
 
@@ -251,6 +249,12 @@ function bindEvents(config) {
 function openSpinModal() {
   spinModalBackdrop.classList.remove("hidden");
   closeBottomSheet();
+
+  // reset after-submit CTA
+  waCtaWrap.classList.add("hidden");
+  waCtaBtn.href = "#";
+  formMsg.textContent = "";
+
   resultText.textContent = "Tap Spin Now to try the demo.";
   spinBtn.disabled = false;
 }
@@ -261,6 +265,8 @@ function closeSpinModal() {
   leadForm.reset();
   formMsg.textContent = "";
   setLoading(false);
+  waCtaWrap.classList.add("hidden");
+  waCtaBtn.href = "#";
 }
 
 function openBottomSheet() {
@@ -306,13 +312,14 @@ function handleSpin() {
 async function handleSubmit(e, config) {
   e.preventDefault();
 
-  // ✅ Pre-open a blank tab NOW (user gesture), so later we can navigate it
-  // This prevents the original tab from redirecting.
-  const waTab = openBlankTab();
+  // hide WhatsApp CTA until success
+  waCtaWrap.classList.add("hidden");
+  waCtaBtn.href = "#";
 
+  // Honeypot anti-spam
   const honeypot = (document.getElementById("website").value || "").trim();
   if (honeypot) {
-    finishWhatsApp(waTab, config.whatsapp.number, config.whatsapp.feature_message);
+    showAfterSubmitWhatsApp(config);
     return;
   }
 
@@ -342,17 +349,22 @@ async function handleSubmit(e, config) {
       throw new Error(json.error || "Submit failed. Please try again.");
     }
 
-    formMsg.textContent = "Thanks! Opening WhatsApp…";
-    await delay(500);
+    formMsg.textContent = "Thanks! Tap below to open WhatsApp.";
+    setLoading(false);
 
-    finishWhatsApp(waTab, config.whatsapp.number, config.whatsapp.feature_message);
+    // Show the safe WhatsApp button (user click = not blocked)
+    showAfterSubmitWhatsApp(config);
   } catch (err) {
-    // If submit fails, close the blank tab if we opened one
-    if (waTab && !waTab.closed) waTab.close();
-
     formMsg.textContent = err.message || "Something went wrong. Please try again.";
     setLoading(false);
+    waCtaWrap.classList.add("hidden");
   }
+}
+
+function showAfterSubmitWhatsApp(config) {
+  const url = makeWaUrl(config.whatsapp.number, config.whatsapp.feature_message);
+  waCtaBtn.href = url;
+  waCtaWrap.classList.remove("hidden");
 }
 
 function setLoading(isLoading) {
@@ -361,46 +373,22 @@ function setLoading(isLoading) {
   submitBtnText.textContent = isLoading ? "Submitting…" : "Submit";
 }
 
-/* =========================
-   WhatsApp tab helpers
-   ========================= */
-
-// Opens a blank tab immediately. Might be blocked -> returns null.
-function openBlankTab() {
-  const win = window.open("about:blank", "_blank", "noopener,noreferrer");
-  return win || null;
-}
-
-// For normal click (business card) we can directly open WhatsApp new tab
-function openWhatsAppNewTab(number, message) {
-  const url = makeWaUrl(number, message);
-  const win = window.open(url, "_blank", "noopener,noreferrer");
-  if (!win) {
-    // No same-tab redirect (to avoid your issue). Show a link instead.
-    showManualLink(url);
-  }
-}
-
-// After async submit, navigate the already-opened tab if possible
-function finishWhatsApp(waTab, number, message) {
-  const url = makeWaUrl(number, message);
-
-  if (waTab && !waTab.closed) {
-    waTab.location.href = url;
-    return;
-  }
-
-  // If popup blocked, show manual link button
-  showManualLink(url);
-}
-
 function makeWaUrl(number, message) {
   return `https://wa.me/${encodeURIComponent(number)}?text=${encodeURIComponent(message)}`;
 }
 
-function showManualLink(url) {
-  // Put a clickable link in the form message area
-  formMsg.innerHTML = `Popup blocked. <a href="${escapeAttr(url)}" target="_blank" rel="noopener" style="text-decoration:underline;">Tap here to open WhatsApp</a>`;
+function openNewTabOrToast(url, prefixText) {
+  const win = window.open(url, "_blank", "noopener,noreferrer");
+  if (!win) {
+    showToast(`${prefixText} <a href="${escapeAttr(url)}" target="_blank" rel="noopener">Open WhatsApp</a>`);
+  }
+}
+
+function showToast(html) {
+  toast.innerHTML = html;
+  toast.classList.remove("hidden");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.add("hidden"), 4000);
 }
 
 async function detectLocation() {
@@ -427,10 +415,6 @@ function getYouTubeId(url) {
   }
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -443,4 +427,3 @@ function escapeHtml(str) {
 function escapeAttr(str) {
   return escapeHtml(str).replaceAll("`", "&#096;");
 }
-
