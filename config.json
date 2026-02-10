@@ -1,7 +1,7 @@
 {
   "brand": {
     "background": "creamy-white",
-    "title": "Syaqir Shaq — Demo"
+    "title": "Syaqir Shaq - Demo"
   },
   "apps_script": {
     "endpoint": "https://script.google.com/macros/s/AKfycbzgPKjo35hWqKmM3cYuH6c6hhrhHjelICcQPBMm5krn21H19gfIprzwvuI7u84oB2wHrQ/exec"
@@ -109,3 +109,4 @@
     }
   ]
 }
+

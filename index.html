@@ -3,11 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Syaqir Shaq — Demo</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://ipapi.co https://script.google.com https://script.googleusercontent.com; img-src 'self' data: https://raw.githubusercontent.com https://*.googleusercontent.com https://www.google-analytics.com https://i.ytimg.com; style-src 'self' 'unsafe-inline'; frame-src https://www.youtube.com; font-src 'self' data:; base-uri 'self'; form-action 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none';" />
+  <title>Syaqir Shaq - Demo</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DV2395TKCD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-DV2395TKCD');
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <div class="clouds" id="clouds" aria-hidden="true" data-spawn-ms="1500" data-max="20"></div>
   <main class="page">
     <div class="stack" id="app">
       <!-- Rendered by script.js from config.json -->
@@ -21,36 +31,35 @@
   <div id="spinModalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="spinModalTitle">
     <div class="modal modal-full">
       <div class="modal-topbar">
-        <button id="closeSpinModalBtn" class="icon-btn" type="button" aria-label="Close">←</button>
+        <button id="closeSpinModalBtn" class="icon-btn icon-btn-ghost" type="button" aria-label="Close">&larr;</button>
         <div class="modal-title">
-          <div class="pill">INSTANT WIN</div>
+          <div class="pill pill-light">INSTANT WIN</div>
           <div id="spinModalTitle" class="modal-heading">Spin &amp; Win</div>
         </div>
         <div style="width:44px;"></div>
       </div>
 
-      <div class="modal-body">
-        <div class="wheel-area">
+      <div class="modal-body modal-body-spin">
+        <div class="spin-hero">
+          <div class="spin-hero-title">AAC Instant Lucky Draw Demo</div>
+          <div class="spin-hero-sub">Spin &amp; Win</div>
+        </div>
+
+        <div class="wheel-crop">
+          <div class="wheel-area">
           <div class="pointer" aria-hidden="true"></div>
 
           <div id="wheelDisk" class="wheel-disk" aria-label="Spin wheel">
-            <div class="wheel-icons" aria-hidden="true">
-              <span class="wi wi-1"></span>
-              <span class="wi wi-2"></span>
-              <span class="wi wi-3"></span>
-              <span class="wi wi-4"></span>
-              <span class="wi wi-5"></span>
-              <span class="wi wi-6"></span>
-              <span class="wi wi-7"></span>
-              <span class="wi wi-8"></span>
+            <div id="wheelRotor" class="wheel-rotor">
+              <div id="wheelLabels" class="wheel-labels" aria-hidden="true"></div>
             </div>
           </div>
 
           <div class="wheel-center" aria-hidden="true"></div>
         </div>
+        </div>
 
         <div class="wheel-panel">
-          <div id="resultText" class="result" role="status" aria-live="polite"></div>
           <button id="spinBtn" class="btn btn-primary btn-big" type="button">Spin Now</button>
         </div>
       </div>
@@ -60,6 +69,7 @@
         <div class="sheet-handle" aria-hidden="true"></div>
 
         <div class="sheet-header">
+          <div id="resultText" class="result sheet-result" role="status" aria-live="polite"></div>
           <div class="sheet-title">Get This Feature</div>
           <div class="sheet-sub">Fill in your details. After submit, tap the button to open WhatsApp.</div>
         </div>
@@ -107,7 +117,7 @@
           </div>
 
           <div class="fineprint">
-            By submitting, you agree to be contacted about this feature.
+            By submitting, you agree to be contacted about this feature. Location may be collected for lead context.
           </div>
         </form>
       </div>
@@ -117,3 +127,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
