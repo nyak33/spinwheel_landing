@@ -224,21 +224,25 @@ function bindEvents(config) {
   const businessCard = document.getElementById("businessCard");
   const playNowBtn = document.getElementById("playNowBtn");
 
+  const openBusinessWhatsApp = () => {
+    const url = makeWaUrl(config.whatsapp.number, config.whatsapp.connect_message);
+    openNewTabOrToast(url, "Popup blocked. Tap here to WhatsApp me:");
+  };
+
   waCtaBtn.addEventListener("click", () => {
     trackEvent("whatsapp_cta_click");
   });
 
   businessCard.addEventListener("click", () => {
     trackEvent("business_card_click");
-    const url = makeWaUrl(config.whatsapp.number, config.whatsapp.connect_message);
-    openNewTabOrToast(url, "Popup blocked. Tap here to WhatsApp me:");
+    openBusinessWhatsApp();
   });
 
   businessCard.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
       trackEvent("business_card_keydown", { key: e.key });
-      const url = makeWaUrl(config.whatsapp.number, config.whatsapp.connect_message);
-      openNewTabOrToast(url, "Popup blocked. Tap here to WhatsApp me:");
+      openBusinessWhatsApp();
     }
   });
 
